@@ -16,19 +16,5 @@ from . import stream_types
 
 type_map = {
 
-    "types.LitCharacterization": types.LitCharacterization,
-    "stream_types.LitCharacterization": stream_types.LitCharacterization,
-
-    "types.Resume": types.Resume,
-    "stream_types.Resume": stream_types.Resume,
-
-    "types.Subtask": types.Subtask,
-    "stream_types.Subtask": stream_types.Subtask,
-
-    "types.Ticket": types.Ticket,
-    "stream_types.Ticket": stream_types.Ticket,
-
-
-    "types.Priority": types.Priority,
 
 }

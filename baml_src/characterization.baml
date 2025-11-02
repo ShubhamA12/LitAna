@@ -1,14 +1,14 @@
 
-class LitCharacterization {
-  Character string
-  Protagonist bool
-  Traits string[]
-  Relationships string
-}
+// class LitCharacterization {
+//   Character string
+//   Protagonist bool
+//   Traits string[]
+//   Relationships string
+// }
 
 function AnalyzeText(input: string) -> string {
   // Perform text analysis
-  client "LocalOllama"
+  client "LocalOllama3"
   prompt #"Summarize this Literature: + {{input}}"#
 }
 

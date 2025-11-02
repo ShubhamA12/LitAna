@@ -105,34 +105,6 @@ class BamlSyncClient:
                 "input": input,
             })
             return typing.cast(str, result.cast_to(types, types, stream_types, False, __runtime__))
-    def ExtractResume(self, resume: str,
-        baml_options: BamlCallOptions = {},
-    ) -> types.Resume:
-        # Check if on_tick is provided
-        if 'on_tick' in baml_options:
-            stream = self.stream.ExtractResume(resume=resume,
-                baml_options=baml_options)
-            return stream.get_final_response()
-        else:
-            # Original non-streaming code
-            result = self.__options.merge_options(baml_options).call_function_sync(function_name="ExtractResume", args={
-                "resume": resume,
-            })
-            return typing.cast(types.Resume, result.cast_to(types, types, stream_types, False, __runtime__))
-    def ExtractTasks(self, transcript: str,
-        baml_options: BamlCallOptions = {},
-    ) -> typing.List["types.Ticket"]:
-        # Check if on_tick is provided
-        if 'on_tick' in baml_options:
-            stream = self.stream.ExtractTasks(transcript=transcript,
-                baml_options=baml_options)
-            return stream.get_final_response()
-        else:
-            # Original non-streaming code
-            result = self.__options.merge_options(baml_options).call_function_sync(function_name="ExtractTasks", args={
-                "transcript": transcript,
-            })
-            return typing.cast(typing.List["types.Ticket"], result.cast_to(types, types, stream_types, False, __runtime__))
     
 
 
@@ -154,30 +126,6 @@ class BamlStreamClient:
           lambda x: typing.cast(str, x.cast_to(types, types, stream_types, False, __runtime__)),
           ctx,
         )
-    def ExtractResume(self, resume: str,
-        baml_options: BamlCallOptions = {},
-    ) -> baml_py.BamlSyncStream[stream_types.Resume, types.Resume]:
-        ctx, result = self.__options.merge_options(baml_options).create_sync_stream(function_name="ExtractResume", args={
-            "resume": resume,
-        })
-        return baml_py.BamlSyncStream[stream_types.Resume, types.Resume](
-          result,
-          lambda x: typing.cast(stream_types.Resume, x.cast_to(types, types, stream_types, True, __runtime__)),
-          lambda x: typing.cast(types.Resume, x.cast_to(types, types, stream_types, False, __runtime__)),
-          ctx,
-        )
-    def ExtractTasks(self, transcript: str,
-        baml_options: BamlCallOptions = {},
-    ) -> baml_py.BamlSyncStream[typing.List["stream_types.Ticket"], typing.List["types.Ticket"]]:
-        ctx, result = self.__options.merge_options(baml_options).create_sync_stream(function_name="ExtractTasks", args={
-            "transcript": transcript,
-        })
-        return baml_py.BamlSyncStream[typing.List["stream_types.Ticket"], typing.List["types.Ticket"]](
-          result,
-          lambda x: typing.cast(typing.List["stream_types.Ticket"], x.cast_to(types, types, stream_types, True, __runtime__)),
-          lambda x: typing.cast(typing.List["types.Ticket"], x.cast_to(types, types, stream_types, False, __runtime__)),
-          ctx,
-        )
     
 
 class BamlHttpRequestClient:
@@ -193,20 +141,6 @@ class BamlHttpRequestClient:
             "input": input,
         }, mode="request")
         return result
-    def ExtractResume(self, resume: str,
-        baml_options: BamlCallOptions = {},
-    ) -> baml_py.baml_py.HTTPRequest:
-        result = self.__options.merge_options(baml_options).create_http_request_sync(function_name="ExtractResume", args={
-            "resume": resume,
-        }, mode="request")
-        return result
-    def ExtractTasks(self, transcript: str,
-        baml_options: BamlCallOptions = {},
-    ) -> baml_py.baml_py.HTTPRequest:
-        result = self.__options.merge_options(baml_options).create_http_request_sync(function_name="ExtractTasks", args={
-            "transcript": transcript,
-        }, mode="request")
-        return result
     
 
 class BamlHttpStreamRequestClient:
@@ -220,20 +154,6 @@ class BamlHttpStreamRequestClient:
     ) -> baml_py.baml_py.HTTPRequest:
         result = self.__options.merge_options(baml_options).create_http_request_sync(function_name="AnalyzeText", args={
             "input": input,
-        }, mode="stream")
-        return result
-    def ExtractResume(self, resume: str,
-        baml_options: BamlCallOptions = {},
-    ) -> baml_py.baml_py.HTTPRequest:
-        result = self.__options.merge_options(baml_options).create_http_request_sync(function_name="ExtractResume", args={
-            "resume": resume,
-        }, mode="stream")
-        return result
-    def ExtractTasks(self, transcript: str,
-        baml_options: BamlCallOptions = {},
-    ) -> baml_py.baml_py.HTTPRequest:
-        result = self.__options.merge_options(baml_options).create_http_request_sync(function_name="ExtractTasks", args={
-            "transcript": transcript,
         }, mode="stream")
         return result
     

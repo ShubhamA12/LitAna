@@ -37,42 +37,12 @@ def get_checks(checks: typing.Dict[CheckName, Check]) -> typing.List[Check]:
 def all_succeeded(checks: typing.Dict[CheckName, Check]) -> bool:
     return all(check.status == "succeeded" for check in get_checks(checks))
 # #########################################################################
-# Generated enums (1)
+# Generated enums (0)
 # #########################################################################
 
-class Priority(str, Enum):
-    HIGH = "HIGH"
-    MEDIUM = "MEDIUM"
-    LOW = "LOW"
-
 # #########################################################################
-# Generated classes (4)
+# Generated classes (0)
 # #########################################################################
-
-class LitCharacterization(BaseModel):
-    Character: str
-    Protagonist: bool
-    Traits: typing.List[str]
-    Relationships: str
-
-class Resume(BaseModel):
-    name: str
-    email: str
-    experience: typing.List[str]
-    skills: typing.List[str]
-
-class Subtask(BaseModel):
-    id: int
-    name: str
-
-class Ticket(BaseModel):
-    id: int
-    name: str
-    description: str
-    priority: Priority
-    assignees: typing.List[str]
-    subtasks: typing.List["Subtask"]
-    dependencies: typing.List[int]
 
 # #########################################################################
 # Generated type aliases (0)

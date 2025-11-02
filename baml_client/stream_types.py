@@ -23,33 +23,8 @@ class StreamState(BaseModel, typing.Generic[StreamStateValueT]):
     value: StreamStateValueT
     state: typing_extensions.Literal["Pending", "Incomplete", "Complete"]
 # #########################################################################
-# Generated classes (4)
+# Generated classes (0)
 # #########################################################################
-
-class LitCharacterization(BaseModel):
-    Character: typing.Optional[str] = None
-    Protagonist: typing.Optional[bool] = None
-    Traits: typing.List[str]
-    Relationships: typing.Optional[str] = None
-
-class Resume(BaseModel):
-    name: typing.Optional[str] = None
-    email: typing.Optional[str] = None
-    experience: typing.List[str]
-    skills: typing.List[str]
-
-class Subtask(BaseModel):
-    id: typing.Optional[int] = None
-    name: typing.Optional[str] = None
-
-class Ticket(BaseModel):
-    id: typing.Optional[int] = None
-    name: typing.Optional[str] = None
-    description: typing.Optional[str] = None
-    priority: typing.Optional[types.Priority] = None
-    assignees: typing.List[str]
-    subtasks: typing.List["Subtask"]
-    dependencies: typing.List[int]
 
 # #########################################################################
 # Generated type aliases (0)
