@@ -9,7 +9,11 @@
 function AnalyzeText(input: string) -> string {
   // Perform text analysis
   client "LocalOllama3"
-  prompt #"Summarize this Literature: + {{input}}"#
+
+  prompt #"
+    Identify the characters and describe their relationships with each other and output updated previous output.
+    {{input}}
+  "#
 }
 
 

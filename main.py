@@ -1,15 +1,36 @@
-# # main.py
-# import asyncio
-# from baml_client import b
-# # from baml_client.types import AnalyzeText
-
-# import asyncio
 import json
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from baml_client.sync_client import b
 #from baml_client.types import AnalyzeText
 import baml_client
+from pathlib import Path
+from typing import List
+import os
+
 print(dir(baml_client))
+
+
+FILE_PATH = Path("D:/Projects/LitAna/baml_src/ingest/RomeoAndJuliet.txt")
+TITLE = FILE_PATH.name.split(".")[0]
+
+
+# def load_book_text(file_path: Path) -> str:
+#     """Loads your book. For this demo, it's a small sample."""
+    
+#     # In your real project, you would do:
+#     if file_path.exists():
+#         with open("baml_src/ingest/RomeoAndJuliet.txt", "r", encoding="utf-8") as f:
+#             content = f.read()
+#         return content
+
+def get_file_content(file_path: Path) -> str:
+    if file_path.exists():
+        with file_path.open(encoding='utf-8',mode='r') as f:
+            return f.read()
+    else:
+        raise FileNotFoundError(f"The file at {file_path} does not exist.")
+
+
 
 def call_baml_analyze_text(text_chunk: str) -> str:
     """
@@ -19,15 +40,6 @@ def call_baml_analyze_text(text_chunk: str) -> str:
     summary = b.AnalyzeText(text_chunk)
     return summary
 
-
-def load_book_text() -> str:
-    """Loads your book. For this demo, it's a small sample."""
-    
-    # In your real project, you would do:
-    with open("baml_src/ingest/RomeoAndJuliet.txt", "r", encoding="utf-8") as f:
-        return f.read()
-    
- 
 
 def process_entire_book(book_text: str):
     """
@@ -64,7 +76,7 @@ def process_entire_book(book_text: str):
         summary_from_chunk = call_baml_analyze_text(chunk.page_content)
         
         if summary_from_chunk:
-            print(f"  [BAML Success] Received summary for chunk.")
+            print(f"[BAML Success] Received summary for chunk.")
             all_summaries.append(summary_from_chunk)
         else:
             print("  [BAML Success] Received empty summary for this chunk.")
@@ -80,10 +92,10 @@ def process_entire_book(book_text: str):
 if __name__ == "__main__":
     
     # Step 1: Load the text
-    my_book = load_book_text()
+    content = get_file_content(file_path=FILE_PATH)
     
     # Step 2: Run the full pipeline
-    all_summaries = process_entire_book(my_book)
+    all_summaries = process_entire_book(content)
     
     # Step 3: Show the final, combined result
     print("\n" + "="*50)
