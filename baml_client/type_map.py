@@ -16,5 +16,16 @@ from . import stream_types
 
 type_map = {
 
+    "types.Characters": types.Characters,
+    "stream_types.Characters": stream_types.Characters,
+
+    "types.Relationship": types.Relationship,
+    "stream_types.Relationship": stream_types.Relationship,
+
+    "types.TextSections": types.TextSections,
+    "stream_types.TextSections": stream_types.TextSections,
+
+
+    "types.Weight": types.Weight,
 
 }

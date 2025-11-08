@@ -23,8 +23,22 @@ class StreamState(BaseModel, typing.Generic[StreamStateValueT]):
     value: StreamStateValueT
     state: typing_extensions.Literal["Pending", "Incomplete", "Complete"]
 # #########################################################################
-# Generated classes (0)
+# Generated classes (3)
 # #########################################################################
+
+class Characters(BaseModel):
+    name: typing.Optional[str] = None
+    role: typing.Optional[str] = None
+    relationships: typing.List["Relationship"]
+
+class Relationship(BaseModel):
+    name: typing.Optional[str] = None
+    type: typing.Optional[str] = None
+    weight: typing.Optional[types.Weight] = None
+
+class TextSections(BaseModel):
+    section_id: typing.Optional[int] = None
+    text: typing.Optional[str] = None
 
 # #########################################################################
 # Generated type aliases (0)

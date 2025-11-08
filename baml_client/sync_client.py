@@ -93,7 +93,7 @@ class BamlSyncClient:
     
     def AnalyzeText(self, input: str,
         baml_options: BamlCallOptions = {},
-    ) -> str:
+    ) -> typing.List["types.Characters"]:
         # Check if on_tick is provided
         if 'on_tick' in baml_options:
             stream = self.stream.AnalyzeText(input=input,
@@ -104,7 +104,7 @@ class BamlSyncClient:
             result = self.__options.merge_options(baml_options).call_function_sync(function_name="AnalyzeText", args={
                 "input": input,
             })
-            return typing.cast(str, result.cast_to(types, types, stream_types, False, __runtime__))
+            return typing.cast(typing.List["types.Characters"], result.cast_to(types, types, stream_types, False, __runtime__))
     
 
 
@@ -116,14 +116,14 @@ class BamlStreamClient:
 
     def AnalyzeText(self, input: str,
         baml_options: BamlCallOptions = {},
-    ) -> baml_py.BamlSyncStream[str, str]:
+    ) -> baml_py.BamlSyncStream[typing.List["stream_types.Characters"], typing.List["types.Characters"]]:
         ctx, result = self.__options.merge_options(baml_options).create_sync_stream(function_name="AnalyzeText", args={
             "input": input,
         })
-        return baml_py.BamlSyncStream[str, str](
+        return baml_py.BamlSyncStream[typing.List["stream_types.Characters"], typing.List["types.Characters"]](
           result,
-          lambda x: typing.cast(str, x.cast_to(types, types, stream_types, True, __runtime__)),
-          lambda x: typing.cast(str, x.cast_to(types, types, stream_types, False, __runtime__)),
+          lambda x: typing.cast(typing.List["stream_types.Characters"], x.cast_to(types, types, stream_types, True, __runtime__)),
+          lambda x: typing.cast(typing.List["types.Characters"], x.cast_to(types, types, stream_types, False, __runtime__)),
           ctx,
         )
     

@@ -37,12 +37,31 @@ def get_checks(checks: typing.Dict[CheckName, Check]) -> typing.List[Check]:
 def all_succeeded(checks: typing.Dict[CheckName, Check]) -> bool:
     return all(check.status == "succeeded" for check in get_checks(checks))
 # #########################################################################
-# Generated enums (0)
+# Generated enums (1)
 # #########################################################################
 
+class Weight(str, Enum):
+    ACQUAINTANCE = "ACQUAINTANCE"
+    OUTER_CIRCLE = "OUTER_CIRCLE"
+    INNER_CIRCLE = "INNER_CIRCLE"
+
 # #########################################################################
-# Generated classes (0)
+# Generated classes (3)
 # #########################################################################
+
+class Characters(BaseModel):
+    name: str
+    role: str
+    relationships: typing.List["Relationship"]
+
+class Relationship(BaseModel):
+    name: str
+    type: str
+    weight: Weight
+
+class TextSections(BaseModel):
+    section_id: int
+    text: str
 
 # #########################################################################
 # Generated type aliases (0)

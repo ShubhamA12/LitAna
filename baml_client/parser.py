@@ -26,9 +26,9 @@ class LlmResponseParser:
 
     def AnalyzeText(
         self, llm_response: str, baml_options: BamlCallOptions = {},
-    ) -> str:
+    ) -> typing.List["types.Characters"]:
         result = self.__options.merge_options(baml_options).parse_response(function_name="AnalyzeText", llm_response=llm_response, mode="request")
-        return typing.cast(str, result)
+        return typing.cast(typing.List["types.Characters"], result)
 
     
 
@@ -40,8 +40,8 @@ class LlmStreamParser:
 
     def AnalyzeText(
         self, llm_response: str, baml_options: BamlCallOptions = {},
-    ) -> str:
+    ) -> typing.List["stream_types.Characters"]:
         result = self.__options.merge_options(baml_options).parse_response(function_name="AnalyzeText", llm_response=llm_response, mode="stream")
-        return typing.cast(str, result)
+        return typing.cast(typing.List["stream_types.Characters"], result)
 
     
