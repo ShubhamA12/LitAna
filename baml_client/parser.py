@@ -24,11 +24,11 @@ class LlmResponseParser:
     def __init__(self, options: DoNotUseDirectlyCallManager):
         self.__options = options
 
-    def AnalyzeTextForSections(
+    def DecideOpponentMove(
         self, llm_response: str, baml_options: BamlCallOptions = {},
-    ) -> typing.List["types.TextSections"]:
-        result = self.__options.merge_options(baml_options).parse_response(function_name="AnalyzeTextForSections", llm_response=llm_response, mode="request")
-        return typing.cast(typing.List["types.TextSections"], result)
+    ) -> types.OpponentTurn:
+        result = self.__options.merge_options(baml_options).parse_response(function_name="DecideOpponentMove", llm_response=llm_response, mode="request")
+        return typing.cast(types.OpponentTurn, result)
 
     
 
@@ -38,10 +38,10 @@ class LlmStreamParser:
     def __init__(self, options: DoNotUseDirectlyCallManager):
         self.__options = options
 
-    def AnalyzeTextForSections(
+    def DecideOpponentMove(
         self, llm_response: str, baml_options: BamlCallOptions = {},
-    ) -> typing.List["stream_types.TextSections"]:
-        result = self.__options.merge_options(baml_options).parse_response(function_name="AnalyzeTextForSections", llm_response=llm_response, mode="stream")
-        return typing.cast(typing.List["stream_types.TextSections"], result)
+    ) -> stream_types.OpponentTurn:
+        result = self.__options.merge_options(baml_options).parse_response(function_name="DecideOpponentMove", llm_response=llm_response, mode="stream")
+        return typing.cast(stream_types.OpponentTurn, result)
 
     

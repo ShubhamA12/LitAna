@@ -20,9 +20,9 @@ from .globals import DO_NOT_USE_DIRECTLY_UNLESS_YOU_KNOW_WHAT_YOURE_DOING_RUNTIM
 class TypeBuilder(type_builder.TypeBuilder):
     def __init__(self):
         super().__init__(classes=set(
-          ["Characters","Relationship","TextSections",]
+          ["Fighter","GameState","InventoryItem","OpponentTurn",]
         ), enums=set(
-          ["Weight",]
+          ["ActionType",]
         ), runtime=DO_NOT_USE_DIRECTLY_UNLESS_YOU_KNOW_WHAT_YOURE_DOING_RUNTIME)
 
     # #########################################################################
@@ -30,25 +30,29 @@ class TypeBuilder(type_builder.TypeBuilder):
     # #########################################################################
 
     @property
-    def Weight(self) -> "WeightViewer":
-        return WeightViewer(self)
+    def ActionType(self) -> "ActionTypeViewer":
+        return ActionTypeViewer(self)
 
 
     # #########################################################################
-    # Generated classes 3
+    # Generated classes 4
     # #########################################################################
 
     @property
-    def Characters(self) -> "CharactersViewer":
-        return CharactersViewer(self)
+    def Fighter(self) -> "FighterViewer":
+        return FighterViewer(self)
 
     @property
-    def Relationship(self) -> "RelationshipViewer":
-        return RelationshipViewer(self)
+    def GameState(self) -> "GameStateViewer":
+        return GameStateViewer(self)
 
     @property
-    def TextSections(self) -> "TextSectionsViewer":
-        return TextSectionsViewer(self)
+    def InventoryItem(self) -> "InventoryItemViewer":
+        return InventoryItemViewer(self)
+
+    @property
+    def OpponentTurn(self) -> "OpponentTurnViewer":
+        return OpponentTurnViewer(self)
 
 
 
@@ -56,22 +60,22 @@ class TypeBuilder(type_builder.TypeBuilder):
 # Generated enums 1
 # #########################################################################
 
-class WeightAst:
+class ActionTypeAst:
     def __init__(self, tb: type_builder.TypeBuilder):
         _tb = tb._tb # type: ignore (we know how to use this private attribute)
-        self._bldr = _tb.enum("Weight")
-        self._values: typing.Set[str] = set([  "ACQUAINTANCE",  "OUTER_CIRCLE",  "INNER_CIRCLE",  ])
-        self._vals = WeightValues(self._bldr, self._values)
+        self._bldr = _tb.enum("ActionType")
+        self._values: typing.Set[str] = set([  "ATTACK",  "HEAL",  "DEFEND",  "TAUNT",  ])
+        self._vals = ActionTypeValues(self._bldr, self._values)
 
     def type(self) -> baml_py.FieldType:
         return self._bldr.field()
 
     @property
-    def values(self) -> "WeightValues":
+    def values(self) -> "ActionTypeValues":
         return self._vals
 
 
-class WeightViewer(WeightAst):
+class ActionTypeViewer(ActionTypeAst):
     def __init__(self, tb: type_builder.TypeBuilder):
         super().__init__(tb)
 
@@ -80,7 +84,7 @@ class WeightViewer(WeightAst):
         return [(name, type_builder.EnumValueViewer(self._bldr.value(name))) for name in self._values]
     
 
-class WeightValues:
+class ActionTypeValues:
     def __init__(self, enum_bldr: baml_py.EnumBuilder, values: typing.Set[str]):
         self.__bldr = enum_bldr
         self.__values = values # type: ignore (we know how to use this private attribute) # noqa: F821
@@ -88,41 +92,45 @@ class WeightValues:
     
     
     @property
-    def ACQUAINTANCE(self) -> type_builder.EnumValueViewer:
-        return type_builder.EnumValueViewer(self.__bldr.value("ACQUAINTANCE"))
+    def ATTACK(self) -> type_builder.EnumValueViewer:
+        return type_builder.EnumValueViewer(self.__bldr.value("ATTACK"))
     
     @property
-    def OUTER_CIRCLE(self) -> type_builder.EnumValueViewer:
-        return type_builder.EnumValueViewer(self.__bldr.value("OUTER_CIRCLE"))
+    def HEAL(self) -> type_builder.EnumValueViewer:
+        return type_builder.EnumValueViewer(self.__bldr.value("HEAL"))
     
     @property
-    def INNER_CIRCLE(self) -> type_builder.EnumValueViewer:
-        return type_builder.EnumValueViewer(self.__bldr.value("INNER_CIRCLE"))
+    def DEFEND(self) -> type_builder.EnumValueViewer:
+        return type_builder.EnumValueViewer(self.__bldr.value("DEFEND"))
+    
+    @property
+    def TAUNT(self) -> type_builder.EnumValueViewer:
+        return type_builder.EnumValueViewer(self.__bldr.value("TAUNT"))
     
     
 
 
 
 # #########################################################################
-# Generated classes 3
+# Generated classes 4
 # #########################################################################
 
-class CharactersAst:
+class FighterAst:
     def __init__(self, tb: type_builder.TypeBuilder):
         _tb = tb._tb # type: ignore (we know how to use this private attribute)
-        self._bldr = _tb.class_("Characters")
-        self._properties: typing.Set[str] = set([  "name",  "role",  "relationships",  ])
-        self._props = CharactersProperties(self._bldr, self._properties)
+        self._bldr = _tb.class_("Fighter")
+        self._properties: typing.Set[str] = set([  "name",  "hp",  "max_hp",  "inventory",  ])
+        self._props = FighterProperties(self._bldr, self._properties)
 
     def type(self) -> baml_py.FieldType:
         return self._bldr.field()
 
     @property
-    def props(self) -> "CharactersProperties":
+    def props(self) -> "FighterProperties":
         return self._props
 
 
-class CharactersViewer(CharactersAst):
+class FighterViewer(FighterAst):
     def __init__(self, tb: type_builder.TypeBuilder):
         super().__init__(tb)
 
@@ -132,7 +140,7 @@ class CharactersViewer(CharactersAst):
     
 
 
-class CharactersProperties:
+class FighterProperties:
     def __init__(self, bldr: baml_py.ClassBuilder, properties: typing.Set[str]):
         self.__bldr = bldr
         self.__properties = properties # type: ignore (we know how to use this private attribute) # noqa: F821
@@ -144,32 +152,36 @@ class CharactersProperties:
         return type_builder.ClassPropertyViewer(self.__bldr.property("name"))
     
     @property
-    def role(self) -> type_builder.ClassPropertyViewer:
-        return type_builder.ClassPropertyViewer(self.__bldr.property("role"))
+    def hp(self) -> type_builder.ClassPropertyViewer:
+        return type_builder.ClassPropertyViewer(self.__bldr.property("hp"))
     
     @property
-    def relationships(self) -> type_builder.ClassPropertyViewer:
-        return type_builder.ClassPropertyViewer(self.__bldr.property("relationships"))
+    def max_hp(self) -> type_builder.ClassPropertyViewer:
+        return type_builder.ClassPropertyViewer(self.__bldr.property("max_hp"))
+    
+    @property
+    def inventory(self) -> type_builder.ClassPropertyViewer:
+        return type_builder.ClassPropertyViewer(self.__bldr.property("inventory"))
     
     
 
 
-class RelationshipAst:
+class GameStateAst:
     def __init__(self, tb: type_builder.TypeBuilder):
         _tb = tb._tb # type: ignore (we know how to use this private attribute)
-        self._bldr = _tb.class_("Relationship")
-        self._properties: typing.Set[str] = set([  "name",  "type",  "weight",  ])
-        self._props = RelationshipProperties(self._bldr, self._properties)
+        self._bldr = _tb.class_("GameState")
+        self._properties: typing.Set[str] = set([  "player",  "opponent",  "last_player_move",  ])
+        self._props = GameStateProperties(self._bldr, self._properties)
 
     def type(self) -> baml_py.FieldType:
         return self._bldr.field()
 
     @property
-    def props(self) -> "RelationshipProperties":
+    def props(self) -> "GameStateProperties":
         return self._props
 
 
-class RelationshipViewer(RelationshipAst):
+class GameStateViewer(GameStateAst):
     def __init__(self, tb: type_builder.TypeBuilder):
         super().__init__(tb)
 
@@ -179,7 +191,54 @@ class RelationshipViewer(RelationshipAst):
     
 
 
-class RelationshipProperties:
+class GameStateProperties:
+    def __init__(self, bldr: baml_py.ClassBuilder, properties: typing.Set[str]):
+        self.__bldr = bldr
+        self.__properties = properties # type: ignore (we know how to use this private attribute) # noqa: F821
+
+    
+    
+    @property
+    def player(self) -> type_builder.ClassPropertyViewer:
+        return type_builder.ClassPropertyViewer(self.__bldr.property("player"))
+    
+    @property
+    def opponent(self) -> type_builder.ClassPropertyViewer:
+        return type_builder.ClassPropertyViewer(self.__bldr.property("opponent"))
+    
+    @property
+    def last_player_move(self) -> type_builder.ClassPropertyViewer:
+        return type_builder.ClassPropertyViewer(self.__bldr.property("last_player_move"))
+    
+    
+
+
+class InventoryItemAst:
+    def __init__(self, tb: type_builder.TypeBuilder):
+        _tb = tb._tb # type: ignore (we know how to use this private attribute)
+        self._bldr = _tb.class_("InventoryItem")
+        self._properties: typing.Set[str] = set([  "name",  "quantity",  "effect_value",  ])
+        self._props = InventoryItemProperties(self._bldr, self._properties)
+
+    def type(self) -> baml_py.FieldType:
+        return self._bldr.field()
+
+    @property
+    def props(self) -> "InventoryItemProperties":
+        return self._props
+
+
+class InventoryItemViewer(InventoryItemAst):
+    def __init__(self, tb: type_builder.TypeBuilder):
+        super().__init__(tb)
+
+    
+    def list_properties(self) -> typing.List[typing.Tuple[str, type_builder.ClassPropertyViewer]]:
+        return [(name, type_builder.ClassPropertyViewer(self._bldr.property(name))) for name in self._properties]
+    
+
+
+class InventoryItemProperties:
     def __init__(self, bldr: baml_py.ClassBuilder, properties: typing.Set[str]):
         self.__bldr = bldr
         self.__properties = properties # type: ignore (we know how to use this private attribute) # noqa: F821
@@ -191,32 +250,32 @@ class RelationshipProperties:
         return type_builder.ClassPropertyViewer(self.__bldr.property("name"))
     
     @property
-    def type(self) -> type_builder.ClassPropertyViewer:
-        return type_builder.ClassPropertyViewer(self.__bldr.property("type"))
+    def quantity(self) -> type_builder.ClassPropertyViewer:
+        return type_builder.ClassPropertyViewer(self.__bldr.property("quantity"))
     
     @property
-    def weight(self) -> type_builder.ClassPropertyViewer:
-        return type_builder.ClassPropertyViewer(self.__bldr.property("weight"))
+    def effect_value(self) -> type_builder.ClassPropertyViewer:
+        return type_builder.ClassPropertyViewer(self.__bldr.property("effect_value"))
     
     
 
 
-class TextSectionsAst:
+class OpponentTurnAst:
     def __init__(self, tb: type_builder.TypeBuilder):
         _tb = tb._tb # type: ignore (we know how to use this private attribute)
-        self._bldr = _tb.class_("TextSections")
-        self._properties: typing.Set[str] = set([  "section_id",  "text",  ])
-        self._props = TextSectionsProperties(self._bldr, self._properties)
+        self._bldr = _tb.class_("OpponentTurn")
+        self._properties: typing.Set[str] = set([  "action",  "shout",  ])
+        self._props = OpponentTurnProperties(self._bldr, self._properties)
 
     def type(self) -> baml_py.FieldType:
         return self._bldr.field()
 
     @property
-    def props(self) -> "TextSectionsProperties":
+    def props(self) -> "OpponentTurnProperties":
         return self._props
 
 
-class TextSectionsViewer(TextSectionsAst):
+class OpponentTurnViewer(OpponentTurnAst):
     def __init__(self, tb: type_builder.TypeBuilder):
         super().__init__(tb)
 
@@ -226,7 +285,7 @@ class TextSectionsViewer(TextSectionsAst):
     
 
 
-class TextSectionsProperties:
+class OpponentTurnProperties:
     def __init__(self, bldr: baml_py.ClassBuilder, properties: typing.Set[str]):
         self.__bldr = bldr
         self.__properties = properties # type: ignore (we know how to use this private attribute) # noqa: F821
@@ -234,12 +293,12 @@ class TextSectionsProperties:
     
     
     @property
-    def section_id(self) -> type_builder.ClassPropertyViewer:
-        return type_builder.ClassPropertyViewer(self.__bldr.property("section_id"))
+    def action(self) -> type_builder.ClassPropertyViewer:
+        return type_builder.ClassPropertyViewer(self.__bldr.property("action"))
     
     @property
-    def text(self) -> type_builder.ClassPropertyViewer:
-        return type_builder.ClassPropertyViewer(self.__bldr.property("text"))
+    def shout(self) -> type_builder.ClassPropertyViewer:
+        return type_builder.ClassPropertyViewer(self.__bldr.property("shout"))
     
     
 

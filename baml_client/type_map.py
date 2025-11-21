@@ -16,16 +16,19 @@ from . import stream_types
 
 type_map = {
 
-    "types.Characters": types.Characters,
-    "stream_types.Characters": stream_types.Characters,
+    "types.Fighter": types.Fighter,
+    "stream_types.Fighter": stream_types.Fighter,
 
-    "types.Relationship": types.Relationship,
-    "stream_types.Relationship": stream_types.Relationship,
+    "types.GameState": types.GameState,
+    "stream_types.GameState": stream_types.GameState,
 
-    "types.TextSections": types.TextSections,
-    "stream_types.TextSections": stream_types.TextSections,
+    "types.InventoryItem": types.InventoryItem,
+    "stream_types.InventoryItem": stream_types.InventoryItem,
+
+    "types.OpponentTurn": types.OpponentTurn,
+    "stream_types.OpponentTurn": stream_types.OpponentTurn,
 
 
-    "types.Weight": types.Weight,
+    "types.ActionType": types.ActionType,
 
 }

@@ -1,167 +1,144 @@
-import json
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from baml_client.sync_client import b
-#from baml_client.types import AnalyzeText
-import baml_client
-from pathlib import Path
-from typing import List
-#import os
-#import pprint
+import io
+# Import the BAML client and types
+from baml_client import b 
+# We only import these to construct the request, not to hold state
+from baml_client.types import GameState, Fighter, InventoryItem, ActionType
 
-from dataclasses import dataclass, asdict
-
-print(dir(baml_client))
-
-
-FILE_PATH = Path("D:/Projects/LitAna/baml_src/ingest/RomeoAndJuliet.txt")
-TITLE = FILE_PATH.name.split(".")[0]
-
-
-@dataclass
-class AnalysisResults:
-    title: str
-    characters: List[dict]
-    
-    def save_to_json(self, output_dir: Path) -> None:
-        """Save analysis results to a JSON file"""
-        output_path = output_dir / f"{self.title}_analysis.json"
-        with output_path.open('w', encoding='utf-8') as f:
-            json.dump({
-                'title': self.title,
-                'characters': self.characters
-            }, f, indent=2)
-            
-    def to_dict(self) -> dict:
-        """Convert results to dictionary format"""
-        return asdict(self)
-
-
-# def load_book_text(file_path: Path) -> str:
-#     """Loads your book. For this demo, it's a small sample."""
-    
-#     # In your real project, you would do:
-#     if file_path.exists():
-#         with open("baml_src/ingest/RomeoAndJuliet.txt", "r", encoding="utf-8") as f:
-#             content = f.read()
-#         return content
-
-def get_file_content(file_path: Path) -> str:
-    if file_path.exists():
-        with file_path.open(encoding='utf-8',mode='r') as f:
-            return f.read()
-    else:
-        raise FileNotFoundError(f"The file at {file_path} does not exist.")
-
-
-
-def call_baml_analyze_text(text_chunk: str) -> str:
-    """
-    Calls the BAML 'AnalyzeText' function to get a summary of the text chunk.
-    """
-    print(f"  [BAML Call] Processing chunk of {len(text_chunk)} chars with AnalyzeText...")
-    summary = b.AnalyzeTextForSections(text_chunk)
-    return summary
-
-
-def process_entire_book(book_text: str):
-    """
-    The main Map-Reduce pipeline.
-    """
-    
-    # --- 1. SPLIT (Chunking) ---
-    # This splitter will try to split on newlines, then spaces, etc.
-    # It's a reliable way to create chunks of a desired size.
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=16000,  # The target size for each chunk in characters
-        chunk_overlap=200, # How many characters to overlap between chunks
-        length_function=len,
-        is_separator_regex=False,
-    )
-
-    print(f"Loaded book with {len(book_text)} characters.")
-    print("Splitting book into recursive chunks...")
-    
-    chunks = text_splitter.create_documents([book_text])
-    
-    print(f"Book was split into {len(chunks)} chunks.\n")
-    
-    # --- 2. MAP (Process each chunk) ---
-    print("Beginning 'Map' phase: Processing each chunk with BAML...")
-    
-    # This list will hold the summary from each chunk.
-    all_summaries = []
-
- 
-    for i, chunk in enumerate(chunks):
-        print(f"\n--- Processing Chunk {i+1}/{len(chunks)} (size: {len(chunk.page_content)}) ---")
+class GameEngine:
+    def __init__(self):
+        # 1. USE STANDARD PYTHON DICTIONARIES FOR MUTABLE STATE
+        self.player = {
+            "name": "Hero",
+            "hp": 100,
+            "max_hp": 100,
+            "inventory": [{"name": "Potion", "quantity": 2, "effect_value": 30}]
+        }
         
-        # This is where we call our baml function
-        summary_from_chunk = call_baml_analyze_text(chunk.page_content)
+        self.opponent = {
+            "name": "Dark Knight",
+            "hp": 120,
+            "max_hp": 120,
+            "inventory": [{"name": "Dark Elixir", "quantity": 1, "effect_value": 50}]
+        }
         
-        if summary_from_chunk:
-            print("[BAML Success] Received summary for chunk.")
-            all_summaries.append(summary_from_chunk)
+        self.last_player_move = None
+
+    # Helper to convert Dict -> BAML Type just for the API call
+    def get_baml_state(self):
+        return GameState(
+            player=Fighter(
+                name=self.player["name"],
+                hp=self.player["hp"],
+                max_hp=self.player["max_hp"],
+                inventory=[InventoryItem(**item) for item in self.player["inventory"]]
+            ),
+            opponent=Fighter(
+                name=self.opponent["name"],
+                hp=self.opponent["hp"],
+                max_hp=self.opponent["max_hp"],
+                inventory=[InventoryItem(**item) for item in self.opponent["inventory"]]
+            ),
+            last_player_move=self.last_player_move
+        )
+
+    def print_status(self):
+        p_potions = self.player["inventory"][0]["quantity"]
+        o_potions = self.opponent["inventory"][0]["quantity"]
+        
+        print("\n" + "="*40)
+        print(f"🛡️  {self.player['name']}: {self.player['hp']}/{self.player['max_hp']} HP | Potions: {p_potions}")
+        print(f"💀 {self.opponent['name']}: {self.opponent['hp']}/{self.opponent['max_hp']} HP | Potions: {o_potions}")
+        print("="*40 + "\n")
+
+    def process_damage(self, defender_dict, is_defending):
+        damage = 15 if not is_defending else 5
+        defender_dict["hp"] = max(0, defender_dict["hp"] - damage)
+        return damage
+
+    def process_heal(self, char_dict):
+        # Find potion in the list
+        potion = next((i for i in char_dict["inventory"] if i["name"] in ["Potion", "Dark Elixir"]), None)
+        
+        if potion and potion["quantity"] > 0:
+            heal_amt = potion["effect_value"]
+            char_dict["hp"] = min(char_dict["max_hp"], char_dict["hp"] + heal_amt)
+            potion["quantity"] -= 1
+            return heal_amt
+        return 0
+
+
+def main():
+    game = GameEngine()
+    print("⚔️  BATTLE STARTED: HERO vs DARK KNIGHT ⚔️")
+
+    while game.player["hp"] > 0 and game.opponent["hp"] > 0:
+        game.print_status()
+
+        # --- 1. Player Turn ---
+        print("Choose Action: [1] Attack  [2] Heal  [3] Defend")
+        choice = input(">> ")
+        
+        player_action = "WAIT"
+        player_defending = False
+
+        if choice == "1":
+            # Pass the DICTIONARY, not the BAML object
+            dmg = game.process_damage(game.opponent, False) 
+            print(f"👊 You attacked for {dmg} damage!")
+            player_action = "ATTACK"
+        elif choice == "2":
+            amt = game.process_heal(game.player)
+            if amt > 0:
+                print(f"✨ You healed for {amt} HP.")
+                player_action = "HEAL"
+            else:
+                print("❌ No potions left!")
+                player_action = "FAILED_HEAL"
+        elif choice == "3":
+            print("🛡️ You brace yourself.")
+            player_defending = True
+            player_action = "DEFEND"
         else:
-            print("  [BAML Success] Received empty summary for this chunk.")
-            
-    print("\n\n'Map' phase complete.")
+            print("Invalid move, you stumble!")
 
-    # --- 3. REDUCE (Combine results) ---
-    print("Beginning 'Reduce' phase: Combining all results...")
-    #return all_summaries
+        game.last_player_move = player_action
 
-    processed_summaries = [
-        summary.__dict__ if hasattr(summary, '__dict__') else summary 
-        for summary in all_summaries
-    ]
+        # Check win condition immediately after player move
+        if game.opponent["hp"] <= 0:
+            break
 
-    # Add debug output to see the results
-    print("\nReduced Results:")
-    print("="*50)
-    for i, summary in enumerate(processed_summaries, 1):
-        print(f"\nSummary {i}:")
-        print("-"*30)
-        print(f"Raw summary data: {summary}")
-        print("-"*30)
-    print("="*50)    
-
-    return processed_summaries
-
-
-# --- Main execution ---
-if __name__ == "__main__":
-
-    output_dir = Path("D:/Projects/LitAna/output")
-    output_dir.mkdir(exist_ok=True)
-    
-    # Step 1: Load the text
-    content = get_file_content(file_path=FILE_PATH)
-    
-    # Step 2: Run the full pipeline
-    summaries = process_entire_book(content)
-
-    # results = AnalysisResults(
-    #     title=TITLE,
-    #     characters=summaries
-    # )
-    
-    # results.save_to_json(output_dir)
-
-    # # Step 3: Show the final, combined result
-    # print("\n" + "="*50)
-    # print("✅ PIPELINE COMPLETE. FINAL COMBINED DATA:")
-    # print("="*50)
-    
-    # print(json.dumps(results.to_dict(), indent=2))
-
-    output_file = output_dir / f"{TITLE}_analysis.txt"
-    with output_file.open('w', encoding='utf-8') as f:
-        f.write(f"Analysis Results for {TITLE}\n")
-        f.write("="*50 + "\n\n")
+        # --- 2. Opponent Turn ---
+        print("\n🤔 The Dark Knight is thinking...")
         
-        for summary in summaries:
-            # Write each summary as plain text
-            f.write(str(summary))
-            f.write("\n" + "-"*30 + "\n")
-    
-    print(f"\nAnalysis complete. Results saved to: {output_file}")
+        # CONVERT STATE TO BAML TYPES HERE
+        current_baml_state = game.get_baml_state()
+
+        # Call LLM
+        bot_move = b.DecideOpponentMove(state=current_baml_state)
+
+        print(f"\n🗣️  Dark Knight: \"{bot_move.shout}\"")
+
+        if bot_move.action == ActionType.ATTACK:
+            dmg = game.process_damage(game.player, player_defending)
+            print(f"🔥 Opponent attacks you for {dmg} damage!")
+        
+        elif bot_move.action == ActionType.HEAL:
+            amt = game.process_heal(game.opponent)
+            if amt > 0:
+                print(f"💚 Opponent used a potion and recovered {amt} HP!")
+            else:
+                print("😤 Opponent tried to heal but failed (Logic Error check!).")
+        
+        elif bot_move.action == ActionType.DEFEND:
+            print("🛡️ Opponent raises their shield.")
+            
+        elif bot_move.action == ActionType.TAUNT:
+            print("😒 The opponent is mocking you.")
+
+    if game.player["hp"] > 0:
+        print("\n🎉 VICTORY! The Dark Knight has fallen.")
+    else:
+        print("\n💀 DEFEAT! You have been vanquished.")
+
+if __name__ == "__main__":
+    main()

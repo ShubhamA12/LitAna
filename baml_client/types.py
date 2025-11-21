@@ -40,28 +40,35 @@ def all_succeeded(checks: typing.Dict[CheckName, Check]) -> bool:
 # Generated enums (1)
 # #########################################################################
 
-class Weight(str, Enum):
-    ACQUAINTANCE = "ACQUAINTANCE"
-    OUTER_CIRCLE = "OUTER_CIRCLE"
-    INNER_CIRCLE = "INNER_CIRCLE"
+class ActionType(str, Enum):
+    ATTACK = "ATTACK"
+    HEAL = "HEAL"
+    DEFEND = "DEFEND"
+    TAUNT = "TAUNT"
 
 # #########################################################################
-# Generated classes (3)
+# Generated classes (4)
 # #########################################################################
 
-class Characters(BaseModel):
+class Fighter(BaseModel):
     name: str
-    role: str
-    relationships: typing.List["Relationship"]
+    hp: int
+    max_hp: int
+    inventory: typing.List["InventoryItem"]
 
-class Relationship(BaseModel):
+class GameState(BaseModel):
+    player: "Fighter"
+    opponent: "Fighter"
+    last_player_move: typing.Optional[str] = None
+
+class InventoryItem(BaseModel):
     name: str
-    type: str
-    weight: Weight
+    quantity: int
+    effect_value: int
 
-class TextSections(BaseModel):
-    section_id: str
-    text: str
+class OpponentTurn(BaseModel):
+    action: ActionType
+    shout: str
 
 # #########################################################################
 # Generated type aliases (0)

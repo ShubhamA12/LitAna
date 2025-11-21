@@ -23,22 +23,28 @@ class StreamState(BaseModel, typing.Generic[StreamStateValueT]):
     value: StreamStateValueT
     state: typing_extensions.Literal["Pending", "Incomplete", "Complete"]
 # #########################################################################
-# Generated classes (3)
+# Generated classes (4)
 # #########################################################################
 
-class Characters(BaseModel):
+class Fighter(BaseModel):
     name: typing.Optional[str] = None
-    role: typing.Optional[str] = None
-    relationships: typing.List["Relationship"]
+    hp: typing.Optional[int] = None
+    max_hp: typing.Optional[int] = None
+    inventory: typing.List["InventoryItem"]
 
-class Relationship(BaseModel):
+class GameState(BaseModel):
+    player: typing.Optional["Fighter"] = None
+    opponent: typing.Optional["Fighter"] = None
+    last_player_move: typing.Optional[str] = None
+
+class InventoryItem(BaseModel):
     name: typing.Optional[str] = None
-    type: typing.Optional[str] = None
-    weight: typing.Optional[types.Weight] = None
+    quantity: typing.Optional[int] = None
+    effect_value: typing.Optional[int] = None
 
-class TextSections(BaseModel):
-    section_id: typing.Optional[str] = None
-    text: typing.Optional[str] = None
+class OpponentTurn(BaseModel):
+    action: typing.Optional[types.ActionType] = None
+    shout: typing.Optional[str] = None
 
 # #########################################################################
 # Generated type aliases (0)

@@ -77,6 +77,14 @@ client<llm> LocalOllama3 {
   }
 }
 
+client<llm> LocalOllama4 {
+  provider "openai-generic"
+  options {
+    base_url "http://localhost:11434/v1"
+    model qwen3:0.6b
+  }
+}
+
 
 // Example Google AI client (uncomment to use)
 // client<llm> CustomGemini {
