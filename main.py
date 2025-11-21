@@ -59,7 +59,7 @@ def call_baml_analyze_text(text_chunk: str) -> str:
     Calls the BAML 'AnalyzeText' function to get a summary of the text chunk.
     """
     print(f"  [BAML Call] Processing chunk of {len(text_chunk)} chars with AnalyzeText...")
-    summary = b.AnalyzeText(text_chunk)
+    summary = b.AnalyzeTextForSections(text_chunk)
     return summary
 
 

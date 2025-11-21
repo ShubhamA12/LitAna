@@ -37,7 +37,7 @@ class Relationship(BaseModel):
     weight: typing.Optional[types.Weight] = None
 
 class TextSections(BaseModel):
-    section_id: typing.Optional[int] = None
+    section_id: typing.Optional[str] = None
     text: typing.Optional[str] = None
 
 # #########################################################################

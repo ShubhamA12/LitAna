@@ -60,7 +60,7 @@ class Relationship(BaseModel):
     weight: Weight
 
 class TextSections(BaseModel):
-    section_id: int
+    section_id: str
     text: str
 
 # #########################################################################

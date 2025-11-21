@@ -42,22 +42,35 @@ class Characters{
 }
 
 class TextSections{
-  section_id int
+  section_id string
   text string
 }
 
 
-function AnalyzeText(input: string) -> Characters[] {
+function AnalyzeTextForSections(input: string) -> TextSections[] {
   // Perform text analysis
   client "LocalOllama3"
 
   prompt #"
     {{_.role('user')}}
-    Identify the characters and describe their relationships with each other and output updated previous output.
+    Divide the text into Acts, Sections.
     {{input}}
     {{ctx.output_format}}
   "#
 }
+
+
+// function AnalyzeTextForChar(input: string) -> Characters[] {
+//   // Perform text analysis
+//   client "LocalOllama3"
+
+//   prompt #"
+//     {{_.role('user')}}
+//     Identify the characters and describe their relationships with each other and output updated previous output.
+//     {{input}}
+//     {{ctx.output_format}}
+//   "#
+// }
 
 
 // test AnalyzeSampleText {

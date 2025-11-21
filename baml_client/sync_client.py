@@ -91,20 +91,20 @@ class BamlSyncClient:
     def parse_stream(self):
       return self.__llm_stream_parser
     
-    def AnalyzeText(self, input: str,
+    def AnalyzeTextForSections(self, input: str,
         baml_options: BamlCallOptions = {},
-    ) -> typing.List["types.Characters"]:
+    ) -> typing.List["types.TextSections"]:
         # Check if on_tick is provided
         if 'on_tick' in baml_options:
-            stream = self.stream.AnalyzeText(input=input,
+            stream = self.stream.AnalyzeTextForSections(input=input,
                 baml_options=baml_options)
             return stream.get_final_response()
         else:
             # Original non-streaming code
-            result = self.__options.merge_options(baml_options).call_function_sync(function_name="AnalyzeText", args={
+            result = self.__options.merge_options(baml_options).call_function_sync(function_name="AnalyzeTextForSections", args={
                 "input": input,
             })
-            return typing.cast(typing.List["types.Characters"], result.cast_to(types, types, stream_types, False, __runtime__))
+            return typing.cast(typing.List["types.TextSections"], result.cast_to(types, types, stream_types, False, __runtime__))
     
 
 
@@ -114,16 +114,16 @@ class BamlStreamClient:
     def __init__(self, options: DoNotUseDirectlyCallManager):
         self.__options = options
 
-    def AnalyzeText(self, input: str,
+    def AnalyzeTextForSections(self, input: str,
         baml_options: BamlCallOptions = {},
-    ) -> baml_py.BamlSyncStream[typing.List["stream_types.Characters"], typing.List["types.Characters"]]:
-        ctx, result = self.__options.merge_options(baml_options).create_sync_stream(function_name="AnalyzeText", args={
+    ) -> baml_py.BamlSyncStream[typing.List["stream_types.TextSections"], typing.List["types.TextSections"]]:
+        ctx, result = self.__options.merge_options(baml_options).create_sync_stream(function_name="AnalyzeTextForSections", args={
             "input": input,
         })
-        return baml_py.BamlSyncStream[typing.List["stream_types.Characters"], typing.List["types.Characters"]](
+        return baml_py.BamlSyncStream[typing.List["stream_types.TextSections"], typing.List["types.TextSections"]](
           result,
-          lambda x: typing.cast(typing.List["stream_types.Characters"], x.cast_to(types, types, stream_types, True, __runtime__)),
-          lambda x: typing.cast(typing.List["types.Characters"], x.cast_to(types, types, stream_types, False, __runtime__)),
+          lambda x: typing.cast(typing.List["stream_types.TextSections"], x.cast_to(types, types, stream_types, True, __runtime__)),
+          lambda x: typing.cast(typing.List["types.TextSections"], x.cast_to(types, types, stream_types, False, __runtime__)),
           ctx,
         )
     
@@ -134,10 +134,10 @@ class BamlHttpRequestClient:
     def __init__(self, options: DoNotUseDirectlyCallManager):
         self.__options = options
 
-    def AnalyzeText(self, input: str,
+    def AnalyzeTextForSections(self, input: str,
         baml_options: BamlCallOptions = {},
     ) -> baml_py.baml_py.HTTPRequest:
-        result = self.__options.merge_options(baml_options).create_http_request_sync(function_name="AnalyzeText", args={
+        result = self.__options.merge_options(baml_options).create_http_request_sync(function_name="AnalyzeTextForSections", args={
             "input": input,
         }, mode="request")
         return result
@@ -149,10 +149,10 @@ class BamlHttpStreamRequestClient:
     def __init__(self, options: DoNotUseDirectlyCallManager):
         self.__options = options
 
-    def AnalyzeText(self, input: str,
+    def AnalyzeTextForSections(self, input: str,
         baml_options: BamlCallOptions = {},
     ) -> baml_py.baml_py.HTTPRequest:
-        result = self.__options.merge_options(baml_options).create_http_request_sync(function_name="AnalyzeText", args={
+        result = self.__options.merge_options(baml_options).create_http_request_sync(function_name="AnalyzeTextForSections", args={
             "input": input,
         }, mode="stream")
         return result
