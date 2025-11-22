@@ -21,7 +21,7 @@ class GameEngine:
             "inventory": [{"name": "Dark Elixir", "quantity": 1, "effect_value": 50}]
         }
         
-        self.last_player_move = None
+        self.last_player_move: str #= None
 
     # Helper to convert Dict -> BAML Type just for the API call
     def get_baml_state(self):
